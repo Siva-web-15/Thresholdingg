@@ -1,48 +1,59 @@
 
-#NAME : 
-#REF NO : 
-
+#NAME : Sivabalan M
+#REF NO : 212224230269
 
 # Load the necessary packages
+
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Read the Image and convert to grayscale
 
-#READ THE IMAGE USING IMREAD
-#CONVERT THE COLOR FROM BGR TO RGB
-image_gray=cv2.imread("DUCK.jpg",0)
+
+# Read the Image and convert to grayscale
+image = cv2.imread('./sample.jpg')  # Replace with your image file path
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+plt.subplot(2, 2, 1)
+plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))  # Convert from BGR to RGB for display
+plt.title("Original Image")
+plt.axis('off')
+
+
 
 # Use Global thresholding to segment the image
-ret,thresh_dipt1=cv2.threshold(image_gray,86,255,cv2.THRESH_BINARY)
-ret,thresh_dipt2=cv2.threshold(image_gray,86,255,cv2.THRESH_BINARY_INV)
-ret,thresh_dipt3=cv2.threshold(image_gray,86,255,cv2.THRESH_TOZERO)
-ret,thresh_dipt4=cv2.threshold(image_gray,86,255,cv2.THRESH_TOZERO_INV)
-ret,thresh_dipt5=cv2.threshold(image_gray,100,255,cv2.THRESH_TRUNC)
+_, global_thresholded = cv2.threshold(gray_image, 127, 255, cv2.THRESH_BINARY)
+
+
 
 # Use Adaptive thresholding to segment the image
 
-ret,thresh_dipt6=cv2.threshold(image_gray,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+adaptive_thresholded = cv2.adaptiveThreshold(gray_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
 
 # Use Otsu's method to segment the image 
 
-thresh_dipt7=cv2.adaptiveThreshold(image_gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
-thresh_dipt8=cv2.adaptiveThreshold(image_gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+_, otsu_thresholded = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
 
 # Display the results
+# Global Thresholding
+plt.subplot(2, 2, 2)
+plt.imshow(global_thresholded, cmap='gray')
+plt.title("Global Thresholding")
+plt.axis('off')
 
-titles=["Gray Image","Threshold Image (Binary)","Threshold Image (Binary Inverse)","Threshold Image (To Zero)"
-       ,"Threshold Image (To Zero-Inverse)","Threshold Image (Truncate)","Otsu","Adaptive Threshold (Mean)","Adaptive Threshold (Gaussian)"]
-images=[image_gray,thresh_dipt1,...................,thresh_dipt8]#LIST OUT ALL TILL thresh_dipt8 i.e from thresh_dipt_1 till thresh_dipt_8a
-for i in range(0,9):
-    plt.figure(figsize=(10,10))
-    plt.subplot(1,2,1)
-    plt.title("Original Image")
-    plt.imshow(image)
-    plt.axis("off")
-    plt.subplot(1,2,2)
-    plt.title(titles[i])
-    plt.imshow(cv2.cvtColor(images[i],cv2.COLOR_BGR2RGB))
-    plt.axis("off")
-    plt.show()
+# Adaptive Thresholding
+plt.subplot(2, 2, 3)
+plt.imshow(adaptive_thresholded, cmap='gray')
+plt.title("Adaptive Thresholding")
+plt.axis('off')
+
+# Otsu's Method
+plt.subplot(2, 2, 4)
+plt.imshow(otsu_thresholded, cmap='gray')
+plt.title("Otsu's Method")
+plt.axis('off')
+
+# Show the plot
+plt.tight_layout()
+plt.show()
